@@ -9,4 +9,4 @@ class Product:
         self.name = name
         self.description = description
         self.price = price
-        self.quality = quantity
+        self.quantity = quantity
