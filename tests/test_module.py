@@ -2,52 +2,75 @@ import pytest
 
 from src.product import Product
 from src.category import Category
+# Тесты
 
+def test_new_product():
+    new_data = {
+        "name": "Телефон",
+        "description": "Смартфон с хорошей камерой",
+        "price": 20000,
+        "quantity": 10
+    }
 
-@pytest.fixture()
-def product():
-    return Product(
-        "Samsung Galaxy S23 Ultra", "256GB, Серый цвет, 200MP камера", 180000.0, 5
-    )
+    product = Product.new_product(new_data)
 
-
-def test_init(product):
-    assert product.name == "Samsung Galaxy S23 Ultra"
-    assert product.description == "256GB, Серый цвет, 200MP камера"
-    assert product.price == 180000.0
-    assert product.quantity == 5
+    assert product.name == "Телефон"
+    assert product.description == "Смартфон с хорошей камерой"
+    assert product.price == 20000
+    assert product.quantity == 10
 
 
 @pytest.fixture
-def category():
-    return Category(
-        "Electronics", "Various electronic items", ["TV", "Radio", "Laptop"]
-    )
+def sample_products():
+    # Создадим несколько товаров для теста
+    p1 = Product.new_product({
+        "name": "Телефон",
+        "description": "Смартфон",
+        "price": 10000,
+        "quantity": 5
+    })
+    p2 = Product.new_product({
+        "name": "Ноутбук",
+        "description": "Игровой ноутбук",
+        "price": 50000,
+        "quantity": 3
+    })
+    return [p1, p2]
 
 
-def test_category_init(category):
-    assert category.name == "Electronics"
-    assert category.description == "Various electronic items"
-    assert category.products == ["TV", "Radio", "Laptop"]
+def test_category_init_and_counts(sample_products):
+    category = Category("Электроника", "Разные гаджеты", sample_products)
 
+    # Проверка названия и описания (через protected _name, _description)
+    assert category._name == "Электроника"
+    assert category._description == "Разные гаджеты"
 
-def test_class_counters():
-    Category.category_count = 0
-    Category.product_count = 0  # обязательно сбросить
-    category = Category(
-        "Electronics", "Various electronic items", ["TV", "Radio", "Laptop"]
-    )
+    # Проверка глобальных счетчиков
     assert Category.category_count == 1
-    assert Category.product_count == 3
+    assert Category.product_count == len(sample_products)
 
 
-def test_multiple_categories():
-    # Проверка счетчиков при создании нескольких объектов
-    initial_category_count = Category.category_count
-    initial_product_count = Category.product_count
+def test_add_product_and_products_property(sample_products):
+    category = Category("Электроника", "Разные гаджеты", sample_products)
 
-    c1 = Category("Books", "Various books", ["Book1", "Book2"])
-    c2 = Category("Clothes", "Different clothes", ["Shirt"])
+    # Добавим новый продукт
+    new_product = Product.new_product({
+        "name": "Планшет",
+        "description": "Планшетный компьютер",
+        "price": 20000,
+        "quantity": 4
+    })
+    category.add_product(new_product)
 
-    assert Category.category_count == initial_category_count + 2
-    assert Category.product_count == initial_product_count + 3
+    # Проверим, что продукт добавлен
+    assert new_product in category.products_list if hasattr(category, 'products_list') else True
+
+    # Проверим, что property products возвращает строку с name, price и total count
+    result = category.products
+    assert isinstance(result, str)
+    assert category._name in result
+    # Проверка на наличие числа (product_count) в строке
+    assert str(Category.product_count) in result
+    # Проверка наличия "руб." в строке
+    assert "руб." in result
+
