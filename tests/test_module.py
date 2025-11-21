@@ -51,7 +51,6 @@ def test_category_count():
     assert Category.category_count == 1
 
 def test_product_count_with_instantiate():
-    # Проверяем количество продуктов при создании категории с несколькими продуктами
     category2 = Category("Бытовая техника", "Аппараты для дома", [
         Product.new_product({
             "name": "Холодильник",
