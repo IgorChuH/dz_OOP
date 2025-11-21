@@ -62,7 +62,6 @@ def test_add_product_and_products_property(sample_products):
     # Проверка, что продукт добавлен в внутренний список
     assert any(p.name == "Планшет" for p in category._Category__products)
 
-    # Проверка, что property products возвращает строку с нужными данными
     result = category.products
     assert isinstance(result, str)
     assert "Планшет" in result
