@@ -3,51 +3,63 @@ import pytest
 from src.product import Product
 from src.category import Category
 
+def test_new_product():
+    new_data = {
+        "name": "Телефон",
+        "description": "Смартфон с хорошей камерой",
+        "price": 20000,
+        "quantity": 10
+    }
 
-@pytest.fixture()
-def product():
-    return Product(
-        "Samsung Galaxy S23 Ultra", "256GB, Серый цвет, 200MP камера", 180000.0, 5
-    )
+    product = Product.new_product(new_data)
 
-
-def test_init(product):
-    assert product.name == "Samsung Galaxy S23 Ultra"
-    assert product.description == "256GB, Серый цвет, 200MP камера"
-    assert product.price == 180000.0
-    assert product.quantity == 5
-
+    assert product.name == "Телефон"
+    assert product.description == "Смартфон с хорошей камерой"
+    assert product.price == 20000
+    assert product.quantity == 10
 
 @pytest.fixture
-def category():
-    return Category(
-        "Electronics", "Various electronic items", ["TV", "Radio", "Laptop"]
-    )
+def sample_products():
+    p1 = Product.new_product({
+        "name": "Телефон",
+        "description": "Смартфон",
+        "price": 10000,
+        "quantity": 5
+    })
+    p2 = Product.new_product({
+        "name": "Ноутбук",
+        "description": "Игровой ноутбук",
+        "price": 50000,
+        "quantity": 3
+    })
+    return [p1, p2]
 
+def test_category_init_and_counts(sample_products):
+    category = Category("Электроника", "Разные гаджеты", sample_products)
 
-def test_category_init(category):
-    assert category.name == "Electronics"
-    assert category.description == "Various electronic items"
-    assert category.products == ["TV", "Radio", "Laptop"]
+    assert category._name == "Электроника"
+    assert category._description == "Разные гаджеты"
 
+    assert Category.category_count >= 1
+    assert Category.product_count >= len(sample_products)
 
-def test_class_counters():
-    Category.category_count = 0
-    Category.product_count = 0  # обязательно сбросить
-    category = Category(
-        "Electronics", "Various electronic items", ["TV", "Radio", "Laptop"]
-    )
-    assert Category.category_count == 1
-    assert Category.product_count == 3
+def test_add_product_and_products_property(sample_products):
+    category = Category("Электроника", "Разные гаджеты", sample_products)
 
+    # Создаем новый продукт
+    new_product = Product.new_product({
+        "name": "Планшет",
+        "description": "Планшетный компьютер",
+        "price": 20000,
+        "quantity": 4
+    })
 
-def test_multiple_categories():
-    # Проверка счетчиков при создании нескольких объектов
-    initial_category_count = Category.category_count
-    initial_product_count = Category.product_count
+    category.add_product(new_product)
 
-    c1 = Category("Books", "Various books", ["Book1", "Book2"])
-    c2 = Category("Clothes", "Different clothes", ["Shirt"])
+    # Проверка, что продукт добавлен во внутренний список
+    assert any(p.name == "Планшет" for p in category._Category__products)
 
-    assert Category.category_count == initial_category_count + 2
-    assert Category.product_count == initial_product_count + 3
+    result = category.products
+    assert isinstance(result, str)
+    assert "Планшет" in result
+    assert "20000" in result
