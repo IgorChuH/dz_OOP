@@ -37,11 +37,9 @@ def sample_products():
 def test_category_init_and_counts(sample_products):
     category = Category("Электроника", "Разные гаджеты", sample_products)
 
-    # Проверка названия и описания
     assert category._name == "Электроника"
     assert category._description == "Разные гаджеты"
 
-    # Проверка глобальных счетчиков
     assert Category.category_count >= 1
     assert Category.product_count >= len(sample_products)
 
@@ -59,7 +57,7 @@ def test_add_product_and_products_property(sample_products):
     # Добавляем продукт
     category.add_product(new_product)
 
-    # Проверка, что продукт добавлен в внутренний список
+    # Проверка, что продукт добавлен во внутренний список
     assert any(p.name == "Планшет" for p in category._Category__products)
 
     result = category.products
