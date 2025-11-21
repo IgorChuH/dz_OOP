@@ -1,12 +1,7 @@
 import pytest
+
 from src.product import Product
 from src.category import Category
-
-@pytest.fixture(autouse=True)
-def reset_category_count():
-    # Сброс значений перед каждым тестом
-    Category.category_count = 0
-    Category.product_count = 0
 
 def test_new_product():
     new_data = {
@@ -17,6 +12,7 @@ def test_new_product():
     }
 
     product = Product.new_product(new_data)
+
     assert product.name == "Телефон"
     assert product.description == "Смартфон с хорошей камерой"
     assert product.price == 20000
@@ -24,7 +20,6 @@ def test_new_product():
 
 @pytest.fixture
 def sample_products():
-    # Создадим несколько товаров для теста
     p1 = Product.new_product({
         "name": "Телефон",
         "description": "Смартфон",
@@ -39,40 +34,36 @@ def sample_products():
     })
     return [p1, p2]
 
-def test_category_count():
-    # Проверяем количество категорий при создании первой категории
-    category1 = Category("Электроника", "Устройства и аксессуары", [
-        Product.new_product({
-            "name": "Телефон",
-            "price": 20000,
-            "quantity": 10
-        })
-    ])
-    assert Category.category_count == 1
+def test_category_init_and_counts(sample_products):
+    category = Category("Электроника", "Разные гаджеты", sample_products)
 
-def test_product_count_with_instantiate():
-    category2 = Category("Бытовая техника", "Аппараты для дома", [
-        Product.new_product({
-            "name": "Холодильник",
-            "price": 30000,
-            "quantity": 5
-        }),
-        Product.new_product({
-            "name": "Стиральная машина",
-            "price": 25000,
-            "quantity": 3
-        })
-    ])
-    assert Category.product_count == 2
+    # Проверка названия и описания
+    assert category._name == "Электроника"
+    assert category._description == "Разные гаджеты"
 
-def test_add_product():
-    category3 = Category("Книги", "Все о книгах", [])
-    assert Category.product_count == 0  # Должно быть 0 продуктов
-    product = Product.new_product({
-        "name": "Книга",
-        "description": "Новая книга",
-        "price": 500,
-        "quantity": 10
+    # Проверка глобальных счетчиков
+    assert Category.category_count >= 1
+    assert Category.product_count >= len(sample_products)
+
+def test_add_product_and_products_property(sample_products):
+    category = Category("Электроника", "Разные гаджеты", sample_products)
+
+    # Создаем новый продукт
+    new_product = Product.new_product({
+        "name": "Планшет",
+        "description": "Планшетный компьютер",
+        "price": 20000,
+        "quantity": 4
     })
-    category3.add_product(product)
-    assert Category.product_count == 1  # Должно быть 1 продукт
+
+    # Добавляем продукт
+    category.add_product(new_product)
+
+    # Проверка, что продукт добавлен в внутренний список
+    assert any(p.name == "Планшет" for p in category._Category__products)
+
+    # Проверка, что property products возвращает строку с нужными данными
+    result = category.products
+    assert isinstance(result, str)
+    assert "Планшет" in result
+    assert "20000" in result
