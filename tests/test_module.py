@@ -54,7 +54,6 @@ def test_add_product_and_products_property(sample_products):
         "quantity": 4
     })
 
-    # Добавляем продукт
     category.add_product(new_product)
 
     # Проверка, что продукт добавлен во внутренний список
