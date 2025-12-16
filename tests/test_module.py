@@ -100,9 +100,8 @@ def test_product_add():
     assert total == (10000 * 5) + (50000 * 3)
 
 def test_category_string_representation(sample_products):
-    # Тестирование строкового представления категории
     category = Category("Электроника", "Разные гаджеты", sample_products)
-    expected_string = f"Электроника, количество продуктов: {Category.product_count} шт."
+    expected_string = f"Электроника, количество продуктов: {sum(p.quantity for p in sample_products)} шт."
     assert str(category) == expected_string
 
 def test_empty_category():
