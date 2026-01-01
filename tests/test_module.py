@@ -1,6 +1,8 @@
 import pytest
 from src.product import Product
 from src.category import Category
+from src.product import Smartphone
+from src.product import LawnGrass
 
 def test_new_product():
     # Тестирование создания нового продукта через класс-метод
@@ -111,3 +113,37 @@ def test_empty_category():
     assert category._description == "Описание"
     assert Category.product_count >= 0 #  assert Category.product_count == 0 -  неверный тест
     assert category.products == ""
+
+def test_smartphone_add():
+    # Тестируем сложение двух смартфонов
+    s1 = Smartphone("Samsung Galaxy", "Описание", 30000, 2, 5.0, "S21", 128, "Black")
+    s2 = Smartphone("iPhone", "Описание", 50000, 1, 5.0, "13", 256, "White")
+    total = s1 + s2
+    assert total == (30000 * 2) + (50000 * 1)
+
+def test_lawngrass_add():
+    # Тестируем сложение двух типов газонной травы
+    l1 = LawnGrass("GreenField", "Описание", 500, 10, "Russia", 14, "Green")
+    l2 = LawnGrass("EcoLawn", "Описание", 700, 5, "Germany", 10, "Dark Green")
+    total = l1 + l2
+    assert total == (500 * 10) + (700 * 5)
+
+def test_product_and_smartphone_add_raises_error():
+    # Тестируем, что выбрасывается исключение при попытке сложения смартфона и продукта,
+    # так как метод __add__ есть только в Smartphone и LawnGrass
+    p1 = Product("Generic Product", "Описание", 1000, 5)
+    s1 = Smartphone("Samsung Galaxy", "Описание", 30000, 2, 5.0, "S21", 128, "Black")
+    with pytest.raises(TypeError):
+        s1 + p1
+
+def test_smartphone_creation():
+    # Тестируем создание экземпляра класса Smartphone
+    smartphone = Smartphone("Samsung Galaxy", "Описание", 30000, 2, 5.0, "S21", 128, "Black")
+    assert smartphone.name == "Samsung Galaxy"
+    assert smartphone.price == 30000
+
+def test_lawngrass_creation():
+    # Тестируем создание экземпляра класса LawnGrass
+    lawn_grass = LawnGrass("GreenField", "Описание", 500, 10, "Russia", 14, "Green")
+    assert lawn_grass.name == "GreenField"
+    assert lawn_grass.country == "Russia"
