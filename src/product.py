@@ -34,8 +34,11 @@ class Product:
     def __add__(self, other):
         return (self.__price * self.quantity) + (other.price * other.quantity)
 
+
 class Smartphone(Product):
-    def __init__(self, name, description, price, quantity, efficiency, model, memory, color):
+    def __init__(
+        self, name, description, price, quantity, efficiency, model, memory, color
+    ):
         super().__init__(name, description, price, quantity)
         self._Product__price = price
         self.efficiency = efficiency
@@ -47,11 +50,15 @@ class Smartphone(Product):
         """Сложение двух продуктов по цене и количеству, если оба продукта одного класса"""
         if type(self) is type(other):
             return (self.price * self.quantity) + (other.price * other.quantity)
-        raise TypeError(f"Нельзя добовлять продукт к смартфону: {type(self).__name__} и {type(other).__name__}")
+        raise TypeError(
+            f"Нельзя добовлять продукт к смартфону: {type(self).__name__} и {type(other).__name__}"
+        )
 
 
 class LawnGrass(Product):
-    def __init__(self, name, description, price, quantity, country, germination_period, color):
+    def __init__(
+        self, name, description, price, quantity, country, germination_period, color
+    ):
         super().__init__(name, description, price, quantity)
         self.country = country
         self.germination_period = germination_period
@@ -61,4 +68,6 @@ class LawnGrass(Product):
         """Сложение двух продуктов по цене и количеству, если оба продукта одного класса"""
         if type(self) is type(other):
             return (self.price * self.quantity) + (other.price * other.quantity)
-        raise TypeError(f"Нельзя добовлять продукт к смартфону: {type(self).__name__} и {type(other).__name__}")
+        raise TypeError(
+            f"Нельзя добовлять продукт к смартфону: {type(self).__name__} и {type(other).__name__}"
+        )
