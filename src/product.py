@@ -1,10 +1,40 @@
-class Product:
+from abc import ABC, abstractmethod
+
+
+class BaseProduct(ABC):
+    """Абстрактный базовый класс продукта."""
+
+    @abstractmethod
+    def __init__(self):
+        pass
+
+
+class ProductMixin:
+    """Миксин для логирования при создании объекта."""
+
+    def __init__(self, *args, **kwargs):
+        """Выводит информацию об объекте при инициализации."""
+        super().__init__(
+            *args, **kwargs
+        )  # Сначала вызываем __init__ следующего класса в MRO
+        print(self.__class__.__name__, "создан")  # Выводим информацию о создании класса
+
+    def __repr__(self):
+        """Возвращает строковое представление объекта."""
+        return f"{self.__class__.__name__}"
+
+
+class Product(ProductMixin, BaseProduct):
+    """Класс продукта, наследуется от миксина ProductMixin и BaseProduct."""
 
     def __init__(self, name, description, price, quantity):
+        """Инициализация объекта Product."""
+        # Инициализация атрибутов экземпляра Product
         self.name = name
         self.description = description
         self.__price = price
         self.quantity = quantity
+        super().__init__()  # Вызываем __init__ миксина после инициализации атрибутов
 
     @classmethod
     def new_product(cls, data):
@@ -51,7 +81,7 @@ class Smartphone(Product):
         if type(self) is type(other):
             return (self.price * self.quantity) + (other.price * other.quantity)
         raise TypeError(
-            f"Нельзя добовлять продукт к смартфону: {type(self).__name__} и {type(other).__name__}"
+            f"Нельзя добавлять продукт к смартфону: {type(self).__name__} и {type(other).__name__}"
         )
 
 

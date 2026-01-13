@@ -1,7 +1,7 @@
 import pytest
 
 from src.category import Category
-from src.product import LawnGrass, Product, Smartphone
+from src.product import BaseProduct, LawnGrass, Product, Smartphone
 
 
 def test_new_product():
@@ -42,8 +42,8 @@ def test_category_init_and_counts(sample_products):
     # Тестирование инициализации категории и подсчета продуктов и категорий
     category = Category("Электроника", "Разные гаджеты", sample_products)
 
-    assert category._name == "Электроника"
-    assert category._description == "Разные гаджеты"
+    assert category.name == "Электроника"
+    assert category.description == "Разные гаджеты"
 
     assert Category.category_count >= 1
     assert Category.product_count >= len(sample_products)
@@ -118,11 +118,9 @@ def test_category_string_representation(sample_products):
 def test_empty_category():
     # Тестирование категории без продуктов
     category = Category("Пустая категория", "Описание", [])
-    assert category._name == "Пустая категория"
-    assert category._description == "Описание"
-    assert (
-        Category.product_count >= 0
-    )
+    assert category.name == "Пустая категория"
+    assert category.description == "Описание"
+    assert Category.product_count >= 0
     assert category.products == ""
 
 
@@ -165,3 +163,21 @@ def test_lawngrass_creation():
     lawn_grass = LawnGrass("GreenField", "Описание", 500, 10, "Russia", 14, "Green")
     assert lawn_grass.name == "GreenField"
     assert lawn_grass.country == "Russia"
+
+
+def test_product_creation(capsys):
+    product = Product("Test Product", "Test Description", 10.0, 5)
+    captured = capsys.readouterr()
+
+    assert product.name == "Test Product"
+    assert product.description == "Test Description"
+    assert product.quantity == 5
+    # Изменяем проверку на форматированную строку:
+    assert str(product) == "Test Product, 10.0 руб. Остаток: 5 шт."
+    assert "Product создан" in captured.out
+
+
+def test_base_product_abstract():
+    """Проверяет, что BaseProduct является абстрактным классом."""
+    with pytest.raises(TypeError):
+        BaseProduct()  # Попытка создать экземпляр
