@@ -20,7 +20,6 @@ class ProductMixin:
         print(self.__class__.__name__, "создан")  # Выводим информацию о создании класса
 
     def __repr__(self):
-        """Возвращает строковое представление объекта."""
         return f"{self.__class__.__name__}"
 
 
