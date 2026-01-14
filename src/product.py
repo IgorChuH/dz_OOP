@@ -20,7 +20,6 @@ class ProductMixin:
         print(self.__class__.__name__, "создан")  # Выводим информацию о создании класса
 
     def __repr__(self):
-        """Возвращает строковое представление объекта."""
         return f"{self.__class__.__name__}"
 
 
@@ -99,5 +98,5 @@ class LawnGrass(Product):
         if type(self) is type(other):
             return (self.price * self.quantity) + (other.price * other.quantity)
         raise TypeError(
-            f"Нельзя добовлять продукт к смартфону: {type(self).__name__} и {type(other).__name__}"
+            f"Нельзя добавлять продукт к смартфону: {type(self).__name__} и {type(other).__name__}"
         )
