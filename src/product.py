@@ -98,5 +98,5 @@ class LawnGrass(Product):
         if type(self) is type(other):
             return (self.price * self.quantity) + (other.price * other.quantity)
         raise TypeError(
-            f"Нельзя добовлять продукт к смартфону: {type(self).__name__} и {type(other).__name__}"
+            f"Нельзя добавлять продукт к смартфону: {type(self).__name__} и {type(other).__name__}"
         )
