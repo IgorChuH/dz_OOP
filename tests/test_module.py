@@ -181,3 +181,39 @@ def test_base_product_abstract():
     """Проверяет, что BaseProduct является абстрактным классом."""
     with pytest.raises(TypeError):
         BaseProduct()  # Попытка создать экземпляр
+
+
+def test_middle_price_with_products():
+    """Тест расчета средней цены продуктов в категории"""
+    category = Category("Электроника", "Техника и гаджеты", [])
+    product1 = Product("Смартфон", "Android смартфон", 30000, 5)
+    product2 = Product("Ноутбук", "Игровой ноутбук", 70000, 3)
+
+    category.add_product(product1)
+    category.add_product(product2)
+
+    expected_average = (30000 + 70000) / 2
+    assert category.middle_price() == expected_average
+
+
+def test_middle_price_empty_category():
+    """Тест средней цены для пустой категории"""
+    category = Category("Электроника", "Техника и гаджеты", [])
+
+    # Должно вернуть 0 при ZeroDivisionError
+    assert category.middle_price() == 0
+
+
+def test_product_zero_quantity_error():
+    """Тест создания продукта с нулевым количеством"""
+    with pytest.raises(
+        ValueError, match="Товар с нулевым количеством не может быть добавлен"
+    ):
+        Product("Смартфон", "Android смартфон", 30000, 0)
+
+
+def test_product_negative_quantity():
+    """Тест создания продукта с отрицательным количеством"""
+    # Предполагаем, что отрицательное количество тоже запрещено
+    with pytest.raises(ValueError):
+        Product("Смартфон", "Android смартфон", 30000, -5)
