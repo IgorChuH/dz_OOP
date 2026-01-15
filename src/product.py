@@ -32,7 +32,10 @@ class Product(ProductMixin, BaseProduct):
         self.name = name
         self.description = description
         self.__price = price
-        self.quantity = quantity
+        if quantity == 0:
+            raise ValueError("Товар с нулевым количеством не может быть добавлен")
+        else:
+            self.quantity = quantity
         super().__init__()  # Вызываем __init__ миксина после инициализации атрибутов
 
     @classmethod

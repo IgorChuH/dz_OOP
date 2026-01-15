@@ -28,6 +28,18 @@ class Category:
             count += product.quantity
         return f"{self.name}, количество продуктов: {count} шт."
 
+    def middle_price(self):
+
+        max_price = 0
+        try:
+            for product in self.__products:
+                max_price += product.price
+            return max_price / len(self.__products)
+        except ValueError:
+            return 0
+        except ZeroDivisionError:
+            return 0
+
     @property
     def products(self):
         result = ""
